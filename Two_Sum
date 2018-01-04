@@ -1,0 +1,95 @@
+Given an array of integers, return indices of the two numbers such that they add up to a specific target.
+
+You may assume that each input would have exactly one solution, and you may not use the same element twice.
+
+Example:
+Given nums = [2, 7, 11, 15], target = 9,
+
+Because nums[0] + nums[1] = 2 + 7 = 9,
+return [0, 1].
+
+在这个问题上要注意以下几点问题
+1. 数组并不是按大小顺序排列的
+2. 一定会有一个结果
+3. 返回的是数组的下标
+4. 同一个数字不能使用两次
+
+这个问题这里总共列出三种答案：
+第一种是看到问题后的大多数人可以想到的解决方法，就是使用两个for循环来实现
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        vector<int> ans;
+        int number = nums.size();
+        for(int i = 0; i < number; i++)
+        {
+            for(int j = i + 1; j < number; j++)
+            {
+                if(target == (nums[i] + nums[j]))
+                {
+                    ans.push_back(i);
+                    ans.push_back(j);
+                    return ans;
+                }
+            }
+        }
+    }
+};
+
+第二种是定义一个临时的变量，存储数组的值，然后排序，使用两个指针，一个指向数组中的第一个数，一个指向最后一个，然后寻找到两个数以后，在原来的数组中查找数字对应的下标
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        int sz=nums.size();
+        int left=0,right=sz-1,sum=0;
+        vector<int> sorted(nums);                   ／／声明一个新的vector，用来存放nums中的数，同时要进行排序
+        std::sort(sorted.begin(),sorted.end());
+        vector<int> index;
+        while(left<right)
+        {
+            sum=sorted[left]+sorted[right];
+            if(sum==target)
+            {
+                for(int i=0;i<sz;i++)
+                {
+                    if(nums[i]==sorted[left])      ／／找到相应的数字后在原来的数组中查找对应的下标并保存
+                        index.push_back(i);
+                    else if(nums[i]==sorted[right])
+                        index.push_back(i);
+                    if(index.size()==2)
+                        return index;
+                }
+            }
+            else if(sum>target)
+            {
+                right--;
+            }
+            else
+            {
+                left++;
+            }
+        }
+        return index;
+    }
+};
+
+对于第一种方案来说缺点就是时间复杂度比较高，为O(n^2)，对于第二种方法来说代码比较冗余，下面说一下第三种方法是利用map来实现的，map中的key值时数组中的数字，value值对应的是数组的下标
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int,int> m;
+        vector<int> res;
+        for(int i=0;i<nums.size();i++) {
+            m[nums[i]]=i;
+        }
+        for(int i=0;i<nums.size();i++) {
+            int t=target-nums[i];
+            if(m.count(t)&&m[t]!=i) {
+                res.push_back(i);
+                res.push_back(m[t]);
+                break;
+            }
+        }
+        return res;
+    }
+};
