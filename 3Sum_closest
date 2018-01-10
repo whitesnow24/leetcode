@@ -1,0 +1,37 @@
+Given an array S of n integers, find three integers in S such that the sum is closest to a given number, target. Return the sum of the three integers. You may assume that each input would have exactly one solution.
+
+    For example, given array S = {-1 2 1 -4}, and target = 1.
+
+    The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
+
+
+这个题的解题思路其实是和3Sum类似的，只不过3Sum里面要求三个数的和为0，而这里我们需要着的是与targt差距最小的数，这要的话left和right两个指针的移动方向就与三个数的和与target之间的差来决定了，具体的代码如下：
+class Solution {
+public:
+    int threeSumClosest(vector<int>& nums, int target) {
+        vector<int> res = nums;
+        sort(res.begin(), res.end());
+        int ans = res[0] + res[1] + res[2];
+        int i;
+        for(i = 0; i < res.size() - 2; i++) {
+            int left = i + 1;
+            int right = res.size() - 1;
+            while(left < right) {
+                int sum = res[i] + res[left] + res[right];
+                if(sum >= target) {
+                    if(abs(ans - target) > (sum - target)) {
+                        ans = sum;
+                    }
+                    right--;
+                }
+                if(sum < target) {
+                    if(abs(ans - target) > (target - sum)) {
+                        ans = sum;
+                    }
+                    left++;
+                }
+            }
+        }
+        return ans;
+    }
+};
