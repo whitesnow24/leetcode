@@ -1,0 +1,82 @@
+Given an array S of n integers, are there elements a, b, c, and d in S such that a + b + c + d = target? Find all unique quadruplets in the array which gives the sum of target.
+
+Note: The solution set must not contain duplicate quadruplets.
+
+For example, given array S = [1, 0, -1, 0, -2, 2], and target = 0.
+
+A solution set is:
+[
+  [-1,  0, 0, 1],
+  [-2, -1, 1, 2],
+  [-2,  0, 0, 2]
+]
+
+与三个数相加的思路一样，不过这里要先固定两个数，另两个数移动，主要是注意不要用重复的结果，以下是代码
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        vector<vector<int>> ans;
+        sort(nums.begin(), nums.end());
+        if(nums.size() < 4) {
+            return ans;
+        }
+        for(int i = 0; i < nums.size() - 3; i++) {
+            for(int j = i + 1; j < nums.size() - 2; j++) {
+                int left = j + 1, right = nums.size() - 1;
+                while(left < right) {
+                    int sum = nums[i] + nums[j] + nums[left] + nums[right];
+                    if(sum == target) {
+                        ans.push_back({nums[i], nums[j], nums[left], nums[right]});
+                        left++;
+                        while(left < right && nums[left] == nums[left - 1]) {
+                            left++;
+                        }
+                        continue;
+                    }
+                    else if(sum > target) {
+                        right--;
+                    }
+                    else {
+                        left++;
+                    }
+                }
+                while(j < nums.size() - 3 && nums[j] == nums[j+1]) {
+                    j++;
+                }
+            }
+            while(i < (nums.size() - 4) && nums[i] == nums[i + 1]) {
+                i++;
+            }
+        }
+        return ans;
+    }
+};
+
+另一种避免重复结果的方法是使用set
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        set<vector<int>> ans;
+        int len = nums.size();
+        sort(nums.begin(),nums.end());
+        for(int i=0; i<len; i++) {
+            for(int j=len-1; j>i; j--) {
+                int k = i+1;
+                int m = j-1;
+                while(k<m) {
+                    int sum = nums[i]+nums[j]+nums[k]+nums[m];
+                    if(sum > target) 
+                        m--;
+                    else if(sum < target)
+                        k++;
+                    else {
+                        ans.insert({nums[i],nums[k],nums[m],nums[j]});
+                        m--;
+                        k++;
+                    }
+                }
+            }
+        }
+        return vector<vector<int>> (ans.begin(),ans.end());
+     }
+};
