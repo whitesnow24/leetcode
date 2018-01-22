@@ -1,0 +1,39 @@
+Given a sorted array and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.
+
+You may assume no duplicates in the array.
+
+Example 1:
+
+Input: [1,3,5,6], 5
+Output: 2
+Example 2:
+
+Input: [1,3,5,6], 2
+Output: 1
+Example 3:
+
+Input: [1,3,5,6], 7
+Output: 4
+Example 1:
+
+Input: [1,3,5,6], 0
+Output: 0
+
+这道题比较简单，是一个已经升序的序列，所以我们只要找到大于等于target的下标返回就好，但是要对一些边界的值进行单独的判断。代码如下：
+class Solution {
+public:
+    int searchInsert(vector<int>& nums, int target) {
+        int len = nums.size();
+        if(0 == len || nums[0] > target) {
+            return 0;
+        }
+        if(nums[len - 1] < target) {
+            return len;
+        }
+        for(int i = 0; i < len; i++) {
+            if(target <= nums[i]) {
+                return i;
+            }
+        }
+    }
+};
