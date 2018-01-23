@@ -1,0 +1,40 @@
+Given a set of candidate numbers (C) (without duplicates) and a target number (T), find all unique combinations in C where the candidate numbers sums to T.
+
+The same repeated number may be chosen from C unlimited number of times.
+
+Note:
+All numbers (including target) will be positive integers.
+The solution set must not contain duplicate combinations.
+For example, given candidate set [2, 3, 6, 7] and target 7, 
+A solution set is: 
+[
+  [7],
+  [2, 2, 3]
+]
+
+这道题的重点是数字可以重复使用，使用了深度优先的算法，用来实现，代码如下：
+class Solution {
+public:
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        vector<vector<int>> res;
+        vector<int> ans;
+        sort(candidates.begin(), candidates.end());
+        combinationSumDFS(candidates, 0, res, ans, target);
+        return res;
+    }
+    
+    void combinationSumDFS(vector<int> &candidates, int start, vector<vector<int>>& res, vector<int> & ans, int target) {
+        if(0 == target) {
+            res.push_back(ans);
+            return;
+        }
+        if(0 > target) {
+            return;
+        }
+        for(int i = start; i < candidates.size(); i++) {
+            ans.push_back(candidates[i]);
+            combinationSumDFS(candidates, i, res, ans, target - candidates[i]);
+            ans.pop_back();
+        }
+    }
+};
